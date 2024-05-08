@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
+import axios from 'axios'; 
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -35,10 +37,32 @@ export default function Signup() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const formData = {
+      firstName: data.get('firstName'),
+      lastName: data.get('lastName'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+
+    submitFormData(formData);
+  };
+
+  const submitFormData = async (formData) => {
+    try {
+      const response = await axios.post(`${baseAddress}/your-endpoint`, formData, {
+        headers: {
+          "accept": "application/json",
+          "Authorization": completeBearerToken(token),
+          //baseAdddress, completebearertoken, token은 값을 받아야할 수 있음.
+          "Content-Type": "application/json"
+        }
+      });
+      console.log('Server response:', response.data);
+      // 서버 응답에 따른 작업을 수행합니다.
+    } catch (error) {
+      console.error('Error:', error);
+      // 오류 처리를 수행합니다.
+    }
   };
 
   return (
